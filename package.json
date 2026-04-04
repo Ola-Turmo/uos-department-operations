@@ -2,6 +2,7 @@
   "name": "@uos/department-operations",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "Department overlay for operations roles, jobs, skills, and connector policy.",
   "license": "MIT",
   "main": "dist/index.js",
