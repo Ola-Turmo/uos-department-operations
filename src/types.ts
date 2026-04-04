@@ -284,3 +284,44 @@ export interface ResolveBottleneckParams {
   reportId: string;
   resolutionNotes: string;
 }
+
+// ============================================
+// Connector Health Types (XAF-007)
+// ============================================
+
+export type ConnectorHealthStatus = "ok" | "degraded" | "error" | "unknown";
+
+export interface ConnectorHealthState {
+  toolkitId: string;
+  status: ConnectorHealthStatus;
+  lastChecked: string;
+  error?: string;
+  limitationMessage?: string;
+}
+
+export interface ToolkitLimitation {
+  toolkitId: string;
+  displayName: string;
+  limitationMessage: string;
+  severity: "critical" | "high" | "medium" | "low";
+  affectedWorkflows: string[];
+  suggestedAction: string;
+}
+
+export interface ConnectorHealthSummary {
+  overallStatus: ConnectorHealthStatus;
+  checkedAt: string;
+  connectors: ConnectorHealthState[];
+  limitations: ToolkitLimitation[];
+  hasLimitations: boolean;
+}
+
+export interface SetConnectorHealthParams {
+  toolkitId: string;
+  status: ConnectorHealthStatus;
+  error?: string;
+}
+
+export interface GetConnectorHealthParams {
+  toolkitId?: string;
+}
