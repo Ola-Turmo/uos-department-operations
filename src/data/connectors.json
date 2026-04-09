@@ -1,0 +1,23 @@
+{
+  "requiredToolkits": [
+    "slack",
+    "notion",
+    "googlesheets",
+    "googledrive",
+    "googledocs"
+  ],
+  "roleToolkits": [
+    {
+      "roleKey": "operations",
+      "toolkits": ["slack", "notion", "googlesheets"]
+    },
+    {
+      "roleKey": "operations-knowledge-lead",
+      "toolkits": ["googledrive", "googledocs", "notion"]
+    },
+    {
+      "roleKey": "operations-automation-operator",
+      "toolkits": ["slack", "googlesheets", "notion"]
+    }
+  ]
+}

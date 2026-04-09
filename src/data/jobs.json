@@ -1,0 +1,18 @@
+[
+  {
+    "jobKey": "operations-weekly-review",
+    "name": "Operations Weekly Review",
+    "cadence": "weekly",
+    "ownerRoleKey": "operations-planning-lead",
+    "projectKey": "strategy-to-budget-project",
+    "goalKey": "strategy-to-budget-goal"
+  },
+  {
+    "jobKey": "operations-knowledge-refresh",
+    "name": "Operations Knowledge Refresh",
+    "cadence": "weekly",
+    "ownerRoleKey": "operations-knowledge-lead",
+    "projectKey": "strategy-to-budget-project",
+    "goalKey": "strategy-to-budget-goal"
+  }
+]

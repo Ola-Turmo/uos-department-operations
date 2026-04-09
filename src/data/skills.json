@@ -1,0 +1,36 @@
+{
+  "bundleIds": [
+    "uos-core",
+    "uos-operations"
+  ],
+  "externalSkills": [
+    {
+      "id": "uos-external-process-docs",
+      "sourceRelativePath": "vendor/external-skills/ola-turmo/unified-skills-catalog/process-docs"
+    },
+    {
+      "id": "uos-external-running-decisions",
+      "sourceRelativePath": "vendor/external-skills/ola-turmo/unified-skills-catalog/running-decision-processes"
+    },
+    {
+      "id": "uos-external-trawl-web-extraction",
+      "sourceRelativePath": "vendor/external-skills/uos-tools/trawl-web-extraction"
+    },
+    {
+      "id": "uos-external-opencli-automation-hub",
+      "sourceRelativePath": "vendor/external-skills/uos-tools/opencli-automation-hub"
+    },
+    {
+      "id": "uos-external-droid-cli-companion",
+      "sourceRelativePath": "vendor/external-skills/uos-tools/droid-cli-companion"
+    },
+    {
+      "id": "kurs-ing-migration-cutover-control",
+      "sourceRelativePath": "vendor/external-skills/kurs-ing/migration-cutover-control"
+    },
+    {
+      "id": "kurs-ing-payments-entitlements-ops",
+      "sourceRelativePath": "vendor/external-skills/kurs-ing/payments-entitlements-ops"
+    }
+  ]
+}

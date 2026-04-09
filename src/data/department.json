@@ -1,0 +1,16 @@
+{
+  "departmentId": "operations",
+  "displayName": "Operations Department",
+  "parentFunctionId": "operations",
+  "parentExecutiveRole": "operations",
+  "moduleId": null,
+  "summary": "Planning cadence, operating knowledge, automation, and operating audit.",
+  "requiredSkillBundles": [
+    "uos-core",
+    "uos-operations"
+  ],
+  "missionRefs": [
+    "strategy-to-budget",
+    "hire-to-productivity"
+  ]
+}

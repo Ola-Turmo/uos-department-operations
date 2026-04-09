@@ -1,0 +1,37 @@
+[
+  {
+    "roleKey": "operations",
+    "title": "Chief of Staff / COO",
+    "roleType": "executive",
+    "layer": "executive",
+    "moduleScoped": false
+  },
+  {
+    "roleKey": "operations-planning-lead",
+    "title": "Planning Lead",
+    "roleType": "manager",
+    "layer": "base",
+    "moduleScoped": false
+  },
+  {
+    "roleKey": "operations-knowledge-lead",
+    "title": "Knowledge Systems Lead",
+    "roleType": "manager",
+    "layer": "base",
+    "moduleScoped": false
+  },
+  {
+    "roleKey": "operations-automation-operator",
+    "title": "Automation Operator",
+    "roleType": "specialist",
+    "layer": "base",
+    "moduleScoped": false
+  },
+  {
+    "roleKey": "operations-operating-auditor",
+    "title": "Operating Auditor",
+    "roleType": "reviewer",
+    "layer": "base",
+    "moduleScoped": false
+  }
+]
