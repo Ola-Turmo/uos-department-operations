@@ -1,5 +1,4 @@
-import { describe, expect, it, beforeEach } from "vitest";
-import { ActionDependencyGraph } from "../../src/planning/dependency-graph.js";
+import { ActionDependencyGraph } from '../../src/planning/dependency-graph';
 
 describe('ActionDependencyGraph', () => {
   let graph: ActionDependencyGraph;
