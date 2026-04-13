@@ -31,5 +31,8 @@ jobs:
       - name: Build plugin
         run: npm run plugin:build
 
+      - name: Full project check (build + tests)
+        run: npm run check
+
       - name: Run plugin tests
         run: npm run plugin:test

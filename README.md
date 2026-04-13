@@ -31,6 +31,128 @@ Built as part of the UOS split workspace on top of [Paperclip](https://github.co
 - Dashboards, status pages, audit trails, review artifacts, and BI/reporting surfaces when operations needs visibility into bottlenecks, completion, and policy adherence.
 - Any tool that materially reduces coordination drag, clarifies ownership, or improves operating visibility across the rest of the UOS workspace.
 
+## Architecture
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                     OPERATIONS SYSTEM                                 │
+│                                                                       │
+│  ┌─────────────┐   ┌─────────────┐   ┌─────────────────────────┐    │
+│  │   NOTION    │   │  MEETINGS   │   │   OPERATIONAL LOGS      │    │
+│  │  Meeting    │──▶│   NOTES     │──▶│   (Action Logs)         │    │
+│  │  Connector  │   │             │   │                         │    │
+│  └─────────────┘   └──────┬──────┘   └──────────┬──────────────┘    │
+│                           │                      │                    │
+│                           ▼                      ▼                    │
+│                   ┌─────────────────┐   ┌─────────────────────┐      │
+│                   │  NLP ACTION    │   │   PROCESS MINER     │      │
+│                   │  EXTRACTOR     │   │   (Alpha Algorithm) │      │
+│                   │                 │   │                     │      │
+│                   └────────┬────────┘   └──────────┬──────────┘      │
+│                            │                       │                  │
+│                            ▼                       ▼                  │
+│                   ┌─────────────────────────────────────────────┐    │
+│                   │        OPERATIONS KNOWLEDGE GRAPH           │    │
+│                   │  meeting → action → owner → knowledge asset  │    │
+│                   │                                             │    │
+│                   └──────────┬───────────────┬─────────────────┘    │
+│                              │               │                       │
+│                              ▼               ▼                       │
+│                   ┌─────────────────┐  ┌─────────────────────┐       │
+│                   │   ML FRESHNESS │  │   DEPENDENCY GRAPH  │       │
+│                   │    SCORER      │  │   (Critical Path)   │       │
+│                   │                 │  │                     │       │
+│                   └────────┬────────┘  └──────────┬──────────┘       │
+│                            │                      │                  │
+│                            ▼                      ▼                  │
+│                   ┌─────────────────────────────────────────────┐    │
+│                   │          FRESHNESS + EXECUTION              │    │
+│                   │    Stale Asset Detection / Action Planning  │    │
+│                   └─────────────────────────────────────────────┘    │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+## Phase 1+2 Features
+
+### NLP Action Extractor (`src/nlp-action-extractor.ts`)
+Automatically extracts actionable items, owners, and due dates from raw meeting notes or transcripts using LLM-powered NLP. Falls back to rule-based extraction when LLM is unavailable.
+
+- **Key capabilities:**
+  - Extracts actions with owner, due date, priority, and confidence scores
+  - Generates meeting summaries and identifies key decisions
+  - Scores action completeness (detects vague or unowned actions)
+  - Rule-based fallback for offline/unavailable LLM scenarios
+
+- **Quality scoring:**
+  - `completeCount` — actions with owners, due dates, and detailed descriptions
+  - `vagueCount` — actions that are too short or lack specificity
+  - `unownedCount` — actions without assigned owners
+  - `overdueCount` — actions past their due date
+
+### ML Knowledge Freshness Scorer (`src/ml-knowledge-freshness.ts`)
+Predicts knowledge base staleness before it happens using engagement signals + time decay modeling.
+
+- **Key capabilities:**
+  - Scores freshness 0–1 (1 = fresh)
+  - Predicts staleness risk: critical / high / medium / low
+  - Computes priority refresh score (0–100) for triage
+  - Batch scoring returns a prioritized refresh queue
+
+- **Scoring factors:**
+  - Days since last update (up to 40% decay weight)
+  - Days since last review (up to 30% decay weight)
+  - Helpful vote ratio (penalty if < 60%)
+  - Recent view count (low views trigger penalty)
+
+### Dependency Graph — Critical Path (`src/dependency-graph.ts`)
+Computes topological execution order and critical path for action planning.
+
+- **Key capabilities:**
+  - Topological sort (Kahn's algorithm) with cycle detection
+  - Critical path detection via longest-path calculation
+  - Parallel batch grouping for concurrent execution
+  - Bottleneck identification on the critical path
+
+- **Output:**
+  - `sortedIds` — topologically sorted action IDs
+  - `criticalPath` — longest-duration path through the dependency graph
+  - `parallelBatches` — groups of actions that can run concurrently
+  - `bottlenecks` — actions on the critical path with no parallel alternatives
+
+### Operations Knowledge Graph (`src/knowledge/meeting-knowledge-graph.ts`)
+In-memory graph connecting meetings → actions → owners → knowledge assets for operations intelligence. Models the cocoindex pattern: meeting notes → extracted entities → graph → queries.
+
+- **Node types:** meeting, action, knowledge_asset, owner, project, topic
+- **Edge relations:** contains, assigns, depends_on, references, blocks, owned_by, discussed_in
+- **Key queries:**
+  - `findMeetingsByTopic` — find all meetings covering a topic
+  - `findStaleActions` — find actions older than N days, optionally filtered by owner
+  - `findAssetDependents` — find actions that reference a knowledge asset
+  - `findActionsByMeeting` — get all actions from a meeting
+
+### Notion Meeting Connector (`src/connectors/notion-meeting-connector.ts`)
+Fetches meeting notes from Notion databases and parses them into structured `NotionMeetingPage` records.
+
+- **Key capabilities:**
+  - Queries Notion databases with filters (date range, type)
+  - Parses Notion page properties: Title/Name, Date, Attendees, Type
+  - Fetches page block content for full text extraction
+  - Gracefully degrades when `NOTION_API_KEY` is not set
+
+### Process Mining — Alpha Algorithm (`src/planning/process-miner.ts`)
+Discovers actual process models from operational action execution logs. Implements a directly-follows graph construction variant of the Alpha Algorithm.
+
+- **Key capabilities:**
+  - Discovers process models from action logs
+  - Identifies start and end activities
+  - Detects parallel activities and loops
+  - Extracts high-frequency execution paths
+  - Bottleneck analysis: cycle time, wait time, throughput, utilization
+  - Overall cycle time and throughput calculations
+
+- **Input:** `ActionLogEntry[]` with caseId, activity, timestamp, resource
+- **Output:** `ProcessMiningResult` with activities, paths, bottlenecks, cycle times
+
 ## KPI Targets
 
 - 100% of recurring operating reviews produce owners, due dates, and follow-up artifacts.
