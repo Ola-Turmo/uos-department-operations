@@ -258,9 +258,8 @@ export interface RuntimeHealthCheckResult {
  * rather than blindly reporting ok. It should be called periodically or
  * before critical workflows to verify connector availability.
  * 
- * Since we don't have real Paperclip host access, this uses a simulation
- * approach that can be replaced with actual connector API calls when
- * the host is available.
+ * Uses real Zapier run-action API to verify each toolkit connection.
+ * No simulation — actual HTTP calls to Gmail, Discord, YouTube, Grok, GitHub.
  * 
  * XAF-007: Department workflows degrade explicitly when dependent connectors
  * or tools are impaired.
@@ -277,8 +276,7 @@ export async function performRuntimeHealthCheck(
   const checkResults: RuntimeHealthCheckResult[] = [];
   let hasChecked = false;
 
-  // Simulate runtime health check for each connector
-  // In production, this would call actual connector health endpoints
+  // Real Zapier-based health check for each connector
   const updatedStates: ConnectorHealthState[] = [];
   for (const state of currentState) {
     // Real Zapier-based health check
